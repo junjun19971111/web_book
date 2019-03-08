@@ -215,8 +215,6 @@ function showUser(data) { //显示传过来的用户数据
 
 				 var num=data.length;
 					for(i=0;i<num;i++){
-
-						 console.log(data[i]);
 						 var li=$('<li></li>');
 						 var name =$(`<div class="music_name">${data[i].id}</div>`);
 						 var z_name =$(`<div>${data[i].name}</div>`);
@@ -225,12 +223,11 @@ function showUser(data) { //显示传过来的用户数据
 						 var time = $(`<div>${data[i].time}</div>`);
 
 						 var edit = $('<div class="edit"></div>');
-						 var add =$('<a class="add"><i class="fa fa-pencil-square" aria-hidden="true"></i></a>');
-						 var remove =$('<a class="remove"><i class="fa fa-trash" aria-hidden="true"></i></a>');
+						 var add =$(`<a class="remove" onclick="delete_user('${data[i].name}')"><i class="fa fa-trash" aria-hidden="true"></i></a>`);
+
 
 						 var hr=$('<hr class="style-one"></hr>');
 						 edit.append(add);
-						 edit.append(remove);
 
 
 						 li.append(name);
@@ -247,33 +244,58 @@ function showUser(data) { //显示传过来的用户数据
 						 $('#user_list').append(hr);
 
 					 }
-					 deleteMusic();
+
 
 
 
 }
+//删除用户
+function delete_user(data) {
+	layer.confirm('您确定要删除该用户么？', {
+		btn: ['确定','取消'] //按钮
+	}, function(){
+		$.post('/delete_user',{str:data}, function(res){
+			if(res){
+				console.log(1);
 
+			}
+			else {
+
+			}
+		})
+		layer.msg('成功删除', {icon: 1});
+	}, function(){
+		layer.close();
+
+	});
+
+}
 function disItem(data) {
 	$('#item_list').html('');
-	$('#item_list').append(`<li><div>借书单编号</div><div>借书人名字</div><div>书名</div><div>数量</div><div>时间</div><div></div></li><hr class="style-one"></hr>`);
+	$('#item_list').append(`<li><div>借书单编号</div><div>借书人名字</div><div>书名</div><div>数量</div><div>时间</div><div>情况</div></li><hr class="style-one"></hr>`);
 
 			var num=data.length;
 			 for(i=0;i<num;i++){
-
-					console.log(data[i]);
 					var li=$('<li></li>');
 					var name =$(`<div class="music_name">${data[i].id}</div>`);
 					var z_name =$(`<div>${data[i].user_name}</div>`);
 					var author =$(`<div>${data[i].book}</div>`);
 					var palce =$(`<div>${data[i].num}</div>`);
 					var time = $(`<div>${data[i].time}</div>`);
+					if(type == 1){
+						var type = $(`<div>图书已还<div>`);
+					}
+					else {
+						var type = $(`<div>图书未还<div>`);
+						var remove =$('<a class="remove" onclick="message()"><i class="fa fa-clock-o" aria-hidden="true"></i></a>');
+					}
 
 					var edit = $('<div class="edit"></div>');
-					var add =$('<a class="add"><i class="fa fa-pencil-square" aria-hidden="true"></i></a>');
-					var remove =$('<a class="remove" ><i class="fa fa-trash" aria-hidden="true"></i></a>');
+
+
 
 					var hr=$('<hr class="style-one"></hr>');
-					edit.append(add);
+
 					edit.append(remove);
 
 
@@ -282,6 +304,7 @@ function disItem(data) {
 					li.append(author);
 					li.append(palce);
 					li.append(time);
+					li.append(type);
 
 
 
@@ -292,9 +315,14 @@ function disItem(data) {
 
 				}
 }
+
+//提醒客户
+function message() {
+	 layer.msg('已催促', {icon: 1});
+}
 function deleteMusic(){
 
-		$('.display_con .display_main .what .show_list #remove_book').bind('click', function(){
+		$('.display_con .display_main .what .show_list .remove').bind('click', function(){
 					var delete_name = $(this).parent().parent().children('.music_name').text();
 					delete_name=delete_name.replace("《","");
 					delete_name=delete_name.replace("》","");
@@ -321,7 +349,7 @@ function deleteMusic(){
 }
 //查看图书详细信息
 function viewBook() {
-	$('.display_con .display_main .what .show_list #view_book').bind('click', function(){
+	$('.display_con .display_main .what .show_list .view').bind('click', function(){
 				var view_name = $(this).parent().parent().children('.music_name').text();
 				view_name=view_name.replace("《","");
 				view_name=view_name.replace("》","");
@@ -362,11 +390,12 @@ function viewBook() {
 
 
 	});
+
 }
 
 //修改图书信息
 function editBook() {
-	$('.display_con .display_main .what .show_list #edit_book').bind('click', function(){
+	$('.display_con .display_main .what .show_list .add').bind('click', function(){
 				var view_name = $(this).parent().parent().children('.music_name').text();
 				view_name=view_name.replace("《","");
 				view_name=view_name.replace("》","");
@@ -386,19 +415,19 @@ function editBook() {
 								        <img src="${data[i].img_url}" alt="">
 								      </div>
 								      <div class="book_info2">
-								          <p>书名：<input type="text" name="" value="${data[i].name}"></p>
-								          <p>作者：<input type="text" name="" value="${data[i].author}"></p>
-								          <p>地区：<input type="text" name="" value="${data[i].palce}"></p>
-								          <p>图书馆余量：<input type="text" name="" value="${data[i].all_num}"></p>
-								          <p>出版社：<input type="text" name="" value="${data[i].z_name}" ></p>
+								          <p >书名：<input id="change_book_name" type="text" name="" value="${data[i].name}"></p>
+								          <p>作者：<input  id="change_book_author" type="text" name="" value="${data[i].author}"></p>
+								          <p>地区：<input  id="change_book_place" type="text" name="" value="${data[i].palce}"></p>
+								          <p>图书馆余量：<input  id="change_book_all_num" type="text" name="" value="${data[i].all_num}"></p>
+								          <p>出版社：<input  id="change_book_z_name" type="text" name="" value="${data[i].z_name}" ></p>
 								      </div>
 
 								    </div>
 								    <div class="book_introduce">
 												<p>图书简介：</p>
-								        <p><input type="text" name="" value="${data[i].introduce}"></p>
+								        <p><input id="change_book_z_introduce" type="text" name="" value="${data[i].introduce}"></p>
 								    </div>
-										<div class = "edit_sumbit">
+										<div class = "edit_sumbit" onclick="editSumbitBook('${data[i].name}');">
 												提交
 										<div>
 								</div>`
@@ -410,9 +439,121 @@ function editBook() {
 
 
 	});
+
+}
+//修改图书的监听提交函数
+function editSumbitBook(data) {
+
+	let name = $('#change_book_name').val();
+	let author = $('#change_book_author').val();
+	let place = $('#change_book_place').val();
+	let all_num = $('#change_book_all_num').val();
+	let z_name = $('#change_book_z_name').val();
+	let introduce = $("#change_book_z_introduce").val();
+	let book={
+		"name":name,
+		"author":author,
+		"place":place,
+		"all_num":all_num,
+		"z_name":z_name,
+		"introduce":introduce
+	}
+	let change_name={
+		"name":data
+	}
+	let info = JSON.stringify(change_name);
+	let str = JSON.stringify(book);
+	$.post('/edit',{str:str,name:info}, function(res){
+		if(res){
+			console.log(1);
+
+		}
+		else {
+
+		}
+	})
+	 layer.msg('成功修改', {icon: 1});
+
 }
 
+//搜索功能
+function search_book() {
+		let bookinfo = $('#search').val();
+		$.get(`/search_book_list/${bookinfo}`,(data)=>{
+			if(data[0]){
+				layer.open({
+					type: 1,
+					title:"图书信息",
+					skin: 'layui-layer-rim', //加上边框
+					area: ['500px', '440px'], //宽高
+					content:`<div class="all_book_info">
+							<div class="book_name">
+								<div class="book_img">
+									<img src="${data[0].img_url}" alt="">
+								</div>
+								<div class="book_info">
+										<p>书名：${data[0].name}</p>
+										<p>作者：${data[0].author}</p>
+										<p>地区：${data[0].palce}</p>
+										<p>图书馆余量：${data[0].all_num}</p>
+										<p>出版社：${data[0].z_name}</p>
+								</div>
 
+							</div>
+							<div class="book_introduce">
+									<p>图书简介：</p>
+									<p>${data[0].introduce}</p>
+							</div>
+					</div>`
+				});
+			}
+			else {
+				layer.msg('书名不存在或书名错误', {icon: 5});
+			}
+		});
+
+}
+
+function addBook() {
+	layer.confirm('您确定此图书信息编辑没错么？', {
+		btn: ['确定','取消'] //按钮
+	}, function(){
+			let name = $("#sumbit_name").val();
+			let author = $("#sumbit_name").val();
+			let z_name  =$("#sumbit_name").val();
+			let img_url = $("#sumbit_name").val();
+			let palce = $("#sumbit_name").val();
+			let introduce = $("#sumbit_name").val();
+			let book={
+				"name":name,
+				"author":author,
+				"z_name":z_name,
+				"img_url": img_url,
+				"palce":palce,
+				"introduce":introduce
+
+			}
+			let str = JSON.stringify(book);
+			$.post('/insert',{str:str}, function(res){
+				if(res){
+					console.log(1);
+
+				}
+				else {
+
+				}
+			})
+			layer.msg('成功添加', {icon: 1});
+
+
+
+	}, function(){
+		layer.close();
+
+	});
+
+
+}
 
 
 

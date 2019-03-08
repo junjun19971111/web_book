@@ -66,7 +66,8 @@ router.get('/item',function(req, res, next){
     });
 
     });
-})
+});
+
 
 // /*获取歌曲API*/
 // router.get('/music_list',function(req, res, next){
@@ -137,16 +138,27 @@ router.get('/item',function(req, res, next){
 //     });
 // })
 
-// router.get('/account?:id', function(req, res, next){
-//     var id = req.params.id;
-//     res.render('index_ingo');
-//
-// });
-//
-// router.get('/users/:userId/musics/:musicId', function(req, res, next){
-//
-//     res.render('play');
-// });
+router.get('/search_book_list/:name', function(req, res, next){
+    var str_book = req.params.name
+    console.log(str_book);
+    MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("book");
+        var whereStr = {"name":str_book};
+        dbo.collection("book").find(whereStr).toArray(function(err, result) {
+             if (err) throw err;
+             console.log(result);
+             res.send(result);
+             db.close();
+         });
+    });
+
+});
+
+router.get('/users/:userId/musics/:musicId', function(req, res, next){
+
+    res.render('play');
+});
 //
 //
 //
@@ -156,43 +168,10 @@ router.get('/item',function(req, res, next){
 //       var   txt_email= req.body.user_email;
 //       var   txt_password= req.body.user_password;
 //
-//     MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
-//         if (err) throw err;
-//         var dbo = db.db("music");
-//         var myobj = { account:`${txt_email}` , password: `${txt_password}`,like:[] };
-//         dbo.collection("user").insertOne(myobj, function(err, result) {
-//             if (err) throw err;
-//             res.send(result);
-//             console.log("文档插入成功");
-//             db.close();
-//         });
-//     });
+
 // });
 // /*添加歌曲*/
-// router.post('/add_music',function(req, res){
-//       var name= req.body.name;
-//       var author= req.body.author;
-//       var palce= req.body.palce;
-//       var z_name= req.body.z_name;
-//       var url= req.body.url;
-//       var introduce= req.body.introduce;
-//       var myobj={
-//         name:`${name}`,
-//         author:`${author}`,
-//         palce:`${palce}`,
-//         hot:"",
-//         comment:'',
-//
-//         url:`${url}`,
-//         z_name:`${z_name}`,
-//
-//         introduce:`${introduce}`,
-//
-//         img:'',
-//       }
-//       addOneMusic(myobj);
-//
-// });
+
 //
 // router.post('/add_like',function(req, res){
 //     var add_like = req.body.music;
@@ -252,20 +231,69 @@ router.post('/delete',function(req, res){
         db.close();
     });
 });
+})
+//删除用户
+router.post('/delete_user',function(req, res){
+    var delete_name = req.body.str;
+    console.log(delete_name);
+    MongoClient.connect(url, {useNewUrlParser:true}, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("book");
+    var whereStr = {"name":delete_name};  // 查询条件
+    dbo.collection("user").deleteOne(whereStr, function(err, obj) {
+        if (err) throw err;
+        console.log("文档删除成功");
+        db.close();
+    });
 });
-//
-//
-// router.get('/manager',function(req, res, next){
-//     MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
-//       if (err) throw err;
-//       var dbo = db.db("music");// 查询条件
-//       dbo.collection("manager").find({}).toArray(function(err, result) {
-//          if (err) throw err;
-//          res.send(result);
-//          db.close();
-//        });
-//      });
-// });
+})
+//插入数据
+router.post('/insert',function(req, res){
+    var str_book = req.body.str;
+    console.log(str_book);
+    let book=JSON.parse(str_book) ;
+    MongoClient.connect(url, {useNewUrlParser:true}, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("book");
+    dbo.collection("book").insertOne(book, function(err, res) {
+          if (err) throw err;
+          console.log("文档插入成功");
+          db.close();
+      });
+});
+});
+
+//修改数据
+router.post('/edit',function(req, res){
+    var str_book = req.body.str;
+    var name = req.body.name;
+    let whereStr =JSON.parse(name) ;
+
+    let book=JSON.parse(str_book) ;
+    console.log(book);
+    var updateStr = {$set: book};
+    MongoClient.connect(url, {useNewUrlParser:true}, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("book");
+    dbo.collection("book").updateOne(whereStr,updateStr, function(err, res) {
+        if (err) throw err;
+        console.log("文档更新成功");
+        db.close();
+    });
+});
+});
+
+router.get('/manager',function(req, res, next){
+    MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
+      if (err) throw err;
+      var dbo = db.db("book");// 查询条件
+      dbo.collection("user").find({}).toArray(function(err, result) {
+         if (err) throw err;
+         res.send(result);
+         db.close();
+       });
+     });
+});
 // function addOneMusic(obj){
 //     MongoClient.connect(url, { useNewUrlParser: true },function(err, db) {
 //       if (err) throw err;

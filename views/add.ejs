@@ -18,11 +18,10 @@
   </head>
   <body>
     <nav>
-          <div id="logo" title="点击刷新">LOGO + 后台管理</div>
-          <i class="fa fa-search" aria-hidden="true"></i>
+          <div id="logo" title="点击刷新"><img src="/images/logo.png" alt=""> 后台管理</div>
+          <i class="fa fa-search" aria-hidden="true" onclick="search_book()"></i>
           <select id="search-select">
-              <option value="author" selected>作者</option>
-              <option value="music">图书</option>
+              <option value="music" selected>图书</option>
           </select>
           <input type="search" id="search" placeholder="搜索关键词">
           <div id="logout" onclick="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</div>
@@ -40,7 +39,6 @@
                 <li class="sel_con" ><a  id="manage_music"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 管理图书</a></li>
                 <li class="sel_tip" ><a href="#"><i class="fa fa-eyedropper fa-lg" aria-hidden="true"></i> 订单管理</a></li>
                 <li class="sel_con" ><a id="addMan"><i class="fa fa-music" aria-hidden="true"></i> 借书订单</a></li>
-                <li class="sel_con" ><a id="manage_singer"><i class="fa fa-male" aria-hidden="true"></i> 还书订单</a></li>
                 <li class="sel_tip" ><a ><i class="fa fa-cog fa-lg" aria-hidden="true"></i>  管理员账户设置</a></li>
                 <li class="sel_con" ><a id="manage_user"><i class="fa fa-user" aria-hidden="true"></i> 管理员账户</a></li>
             </ul>
@@ -72,7 +70,7 @@
                 <div class="text_group">
                     简介：<input id="sumbit_introduce" class="text" type="text" name="" value="" placeholder="歌曲介绍">
                 </div>
-                <div id="add_btn" class="sumbit_btn" onclick="addMusic()">
+                <div id="add_btn" class="sumbit_btn" onclick="addBook()">
                   提交
                 </div>
 

@@ -14,6 +14,10 @@ nav{
     position: relative;
     min-width: 900px;
 }
+nav img{
+  width: 30px;
+  height: 30px;
+}
 #logo {
     width: 220px;
     line-height: 50px;
@@ -249,7 +253,7 @@ nav>i {
     margin-top: 10px;
 }
 .display_con .display_main .what .show_list li div{
-      width: 120px;
+      width: 102px;
       height: 40px;
       line-height: 40px;
       margin-right: 28px;
@@ -262,16 +266,16 @@ nav>i {
 
 }
 .display_con .display_main .what .show_list .edit{
-    width: 170px;
-    height: 40px;
-    margin-right: 0px;
-    margin-left: -20PX;
-    float: left;
-    cursor: pointer;
-    color: #333;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  width: 130px;
+  height: 40px;
+  margin-right: 0px;
+  margin-left: -20PX;
+  float: left;
+  cursor: pointer;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .display_con .display_main .what .show_list li div a{
